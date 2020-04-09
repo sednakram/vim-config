@@ -1,0 +1,3 @@
+[submodule "pack/madscientist/start/vim-vader"]
+	path = pack/madscientist/start/vim-vader
+	url = https://github.com/junegunn/vader.vim
