@@ -1,7 +1,7 @@
 " My cursor configuration settings
 " Maintainer: mark.grzovic@gmail.com 
 " Created: 2020-03-23 Mon 08:19 AM CDT
-" Last Change: 2020-03-23 Mon 08:19 AM CDT
+" Last Change: 2020-04-01 Wed 09:43 AM CDT
 
 if exists("g:loaded_mycursor")
   finish

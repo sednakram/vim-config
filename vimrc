@@ -1,14 +1,11 @@
 " My Vimrc file
-" Last Change: 2020-03-24 Tue 08:33 AM CDT
+" Last Change: 2020-03-26 Thu 11:23 AM CDT
 " Maintainer: mark.grzovic@gmail.com
 " License: www.opensource.org/licenses/bsd-2-clause.php
 
 " Use Vim settings, rather than Vi settings.
 " This must be first b/c it changes other options as a side effect.
 set nocompatible
-
-" Use pathogen to manage runtimepath
-" execute pathogen#infect('bundle/{}', 'src/bundle/{}')
 
 " ========== GLOBAL SETTINGS ==========
 " ---------- General Configurations ----------
@@ -22,6 +19,7 @@ syntax on                 " Turn on syntax highlighting.
 filetype on               " Turn on filetype detection
 set fileformat=unix       " Use Unix formatting.
 set encoding=utf-8        " Use UTF-8 encoding.
+source ~/.vim/pack/madscientist/start/vim-yakuake/yakuake.vim
 
 " ---------- Colorscheme Config ----------
 
@@ -166,6 +164,7 @@ iabbrev tehn then
 iabbrev @@ mark.grzovic@gmail.com 
 iabbrev ccopy Copyright 2018 Mark Grzovic, all rights reserved.
 iabbrev ttime <C-R>=strftime("%Y-%m-%d %a %I:%M %p %Z")<CR>
+iabbrev tdate <c-r>=strftime("%Y-%m-%d %a")<cr>
 
 " ========== AUTOCOMMANDS ==========
 " ---------- Html ----------
@@ -208,14 +207,15 @@ augroup filetype_python
   " Uncomment line
   autocmd FileType python nnoremap <buffer> <localleader>uc 02x
   " Add todo note
-  autocmd FileType python iabbrev <buffer> todo # TODO: ttime<cr># TODO: 
+  autocmd FileType python iabbrev <buffer> todo # TODO: <C-R>=strftime("%Y-%m-%d %a %I:%M %p %Z")<cr><cr># TODO:
   " Insert python file prefix
   autocmd FileType python iabbrev <buffer> ppref #!/usr/bin/env python3<cr># -*- coding: utf-8 -*-<cr>
   " Popular import statements
-  autocmd FileType python iabbrev <buffer> inp import numpy as np
-  autocmd FileType python iabbrev <buffer> ipd import pandas as pd
-  autocmd FileType python iabbrev <buffer> ios import os
   autocmd FileType python iabbrev <buffer> ilog import logging
+  autocmd FileType python iabbrev <buffer> iplt import matplotlib.pyplot as plt
+  autocmd FileType python iabbrev <buffer> inp import numpy as np
+  autocmd FileType python iabbrev <buffer> ios import os
+  autocmd FileType python iabbrev <buffer> ipd import pandas as pd
   " Flag unnecessary whitespace
 "   autocmd BufRead,BufNewFile *.py match BadWhitespace /\s\+$/
 augroup END
@@ -236,6 +236,6 @@ augroup filetype_vimscript
   " Uncomment line
   autocmd FileType vim nnoremap <buffer> <localleader>uc 02x
   " Add todo note
-  autocmd FileType vim iabbrev <buffer> todo " TODO: ttime<cr>" TODO: 
+  autocmd FileType vim iabbrev <buffer> todo " TODO: <C-R>=strftime("%Y-%m-%d %a %I:%M %p %Z")<cr><cr>" TODO:
   " Enable folding
 augroup END

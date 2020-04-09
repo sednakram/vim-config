@@ -2,7 +2,7 @@
 " Description: Useful functions for Python development
 " Maintainer: mark.grzovic@gmail.com 
 " Created: 2020-03-23 Mon 09:27 AM CDT
-" Last Change: 2020-03-26 Thu 08:38 AM CDT
+" Last Change: 2020-04-07 Tue 08:57 AM CDT
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -20,13 +20,38 @@ endif
 if exists("g:loaded_pydev")
   delfunction PYD_DocString
 "   delfunction PYD_RunPyCode
+  delfunction PYD_RunPyLine
   delfunction PYD_RunPyFile
-"   delfunction PYD_StartIPyInterp
+  delfunction PYD_StartIPyInterp
   delfunction PYD_SetEnv
-"   delcommand Ipython
+  delcommand Ipython
   delcommand SetEnv
 endif
 let g:loaded_pydev = 1
+
+" NEW Functionality
+" TODO: 2020-03-30 Mon 07:36 AM CDT
+" TODO: Write function to run the current line of code when <f9> is pressed.
+" TODO: 2020-03-30 Mon 07:38 AM CDT
+" TODO: Write function to run a 'cell' of code when <shift-cr> is pressed.
+"   Ex: a 'cell' is denoted by #%%
+" TODO: 2020-03-30 Mon 07:42 AM CDT
+" TODO: Write an Ex command for running Python code.
+"   Ex: :Python --> run current line
+"   Ex: :%Python --> run the entire file
+"   Ex: :12,15Python --> run lines 12 to 15
+"   Ex: :.,$Python --> run from current line to the end of the file
+"   Ex: :Python 20 --> run 20 lines starting with the current line
+"   Ex: :5Python 10 --> run 10 lines starting with line 5
+" I would like the same instance of the interpreter so I could keep the same
+" variables loaded. Important things to keep in the interpreter: imports,
+" variables, functions, classes.
+" As an alternative I could create a temporary file that
+" would contain every line of code run. And if line 12 is reran after editing
+" the function would write over line 12 in temporary file.
+" TODO: 2020-04-02 Thu 09:59 PM CDT
+" TODO: use qdbus to run commands to another terminal
+"   Ex: :YSetTerminal
 
 " ========== Local variables ==========
 " Set the directory name for temporary files
@@ -38,10 +63,14 @@ let s:envdir = $HOME . "/PythonScripts/environments"
 nnoremap <localleader>d :call PYD_DocString()<cr>
 " Run current file through interpreter
 nnoremap <f5> :call PYD_RunPyFile()<cr>
+" Run one line through interpreter
+nnoremap <f9> :call PYD_RunPyLine()<cr>
 
 " ========== Ex Commands ==========
 " Activate python environment
 command -nargs=1 SetEnv call PYD_SetEnv(<args>)
+" Start an IPython interpreter
+command -nargs=? Ipython call PYD_StartIPyInterp(<args>)
 
 " ========== Functions ==========
 function! PYD_DocString()
@@ -79,13 +108,8 @@ function! PYD_RunPyFile()
   set shellslash&vim
   " Set filename, window number, and log filename
   let l:winnr = winnr()
-  if has("gui_win32") || has("gui_win64")
-    let l:fname = substitute(expand("%:p"), "/", "\\", "")
-    let l:output = s:tmpdir . "\\" . strftime("%Y%m%d") . "_output.log"
-  else
-    let l:fname = expand("%:p")
-    let l:output = s:tmpdir . "/" . strftime("%Y%m%d") . "_output.log"
-  endif
+  let l:fname = expand("%:p")
+  let l:output = s:tmpdir . "/" . strftime("%Y%m%d") . "_output.log"
   " Open log file if it is not already open
   if bufloaded(l:output)
     execute "wincmd l"
@@ -102,21 +126,15 @@ function! PYD_RunPyFile()
   execute "normal! oInput: runfile(" l:fname ")\r"
   " Run code and write output to log file
   if exists("g:envname")
-    let l:cmd1 = 'source ' . s:envdir . "/" . g:envname . "/bin/activate"
-    let l:cmd2 = 'ipython ' . l:fname
+    let l:cmd1 = "source " . s:envdir . "/" . g:envname . "/bin/activate"
+    let l:cmd2 = "ipython --colors=\'NoColor\' " . l:fname
     let l:cmd = l:cmd1 . '; ' . l:cmd2
-    echom l:cmd1
-    echom l:cmd2
-    echom l:cmd
     " Activate the environment; then run code
-"     silent let l:stdout = systemlist(l:cmd)
-    silent let l:stdout = system(l:cmd)
-    let l:index = stridx(strtrans(l:stdout), '^G')-1
-    let @f = strpart(l:stdout, l:index)
-    execute "put f"
-    execute "?Input"
-    execute "normal! 2j"
-    execute "normal! 5dd"
+    execute "$read !" . l:cmd
+"     silent let l:stdout = system(l:cmd)
+"     let l:index = stridx(strtrans(l:stdout), '^G')-1
+"     let @f = strpart(l:stdout, l:index)
+"     execute "put f"
   else
     echom "ERROR: environment is not set."
   endif
@@ -130,10 +148,41 @@ function! PYD_RunPyFile()
   let &shellslash = l:save_shellslash
 endfunction
 
+function! PYD_RunPyLine()
+  let l:linenum = getcurpos()[1]
+  let l:line = getline(l:linenum)
+  if exists("g:envname")
+    " Check to see if the Ipython interpreter is started
+    if exists("g:loaded_ipython")
+      Yrun l:line
+    else
+      call PYD_StartIPyInterp()
+      Yrun l:line
+    endif
+  else
+    echom "ERROR: environment is not set."
+  endif
+endfunction
+
 function! PYD_SetEnv(envname)
   " Set environment variable
   let g:envname = a:envname
   echom "Python environment set to:" g:envname
+endfunction
+
+function! PYD_StartIPyInterp(...)
+  if exists("g:envname")
+    " Check to see if yakuake.vim is loaded
+    if exists("g:loaded_yakuake")
+      execute "Yrun \"source " . s:envdir . "/" . g:envname . "/bin/activate; ipython\""
+      let g:loaded_ipython = 1
+    else
+      let l:cmd = "source " . s:envdir . "/" . g:envname . "/bin/activate; ipython"
+      execute "silent !konsole --workdir " . s:envdir . " -e /bin/bash -c \"" . l:cmd . "\" &"
+    endif
+  else
+    echom "ERROR: environment is not set."
+  endif
 endfunction
 
 let &cpo = s:save_cpo
