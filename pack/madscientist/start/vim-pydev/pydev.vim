@@ -2,7 +2,7 @@
 " Description: Useful functions for Python development
 " Maintainer: mark.grzovic@gmail.com 
 " Created: 2020-03-23 Mon 09:27 AM CDT
-" Last Change: 2020-04-07 Tue 08:57 AM CDT
+" Last Change: 2020-04-10 Fri 10:55 AM CDT
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -21,20 +21,24 @@ if exists("g:loaded_pydev")
   delfunction PYD_DocString
 "   delfunction PYD_RunPyCode
   delfunction PYD_RunPyLine
+  delfunction PYD_RunPyLines
   delfunction PYD_RunPyFile
   delfunction PYD_StartIPyInterp
   delfunction PYD_SetEnv
   delcommand Ipython
   delcommand SetEnv
+  delcommand Rpython
 endif
 let g:loaded_pydev = 1
 
 " NEW Functionality
-" TODO: 2020-03-30 Mon 07:36 AM CDT
-" TODO: Write function to run the current line of code when <f9> is pressed.
 " TODO: 2020-03-30 Mon 07:38 AM CDT
 " TODO: Write function to run a 'cell' of code when <shift-cr> is pressed.
 "   Ex: a 'cell' is denoted by #%%
+" Yrun=> for item in range(10):\nprint('An iteration!')\n
+" getline(lnum, end) list
+" get(list, idx)
+" get(list, idx1) . '\n' . get(list, idx2) . '\n'
 " TODO: 2020-03-30 Mon 07:42 AM CDT
 " TODO: Write an Ex command for running Python code.
 "   Ex: :Python --> run current line
@@ -49,9 +53,6 @@ let g:loaded_pydev = 1
 " As an alternative I could create a temporary file that
 " would contain every line of code run. And if line 12 is reran after editing
 " the function would write over line 12 in temporary file.
-" TODO: 2020-04-02 Thu 09:59 PM CDT
-" TODO: use qdbus to run commands to another terminal
-"   Ex: :YSetTerminal
 
 " ========== Local variables ==========
 " Set the directory name for temporary files
@@ -71,9 +72,11 @@ nnoremap <f9> :call PYD_RunPyLine()<cr>
 command -nargs=1 SetEnv call PYD_SetEnv(<args>)
 " Start an IPython interpreter
 command -nargs=? Ipython call PYD_StartIPyInterp(<args>)
+" Run one or more lines of code
+command -nargs=? -range Rpython <line1>,<line2>call PYD_RunPyLines(<args>)
 
 " ========== Functions ==========
-function! PYD_DocString()
+function PYD_DocString()
   let l:fname = expand("%:t")
   execute "normal! 3i\""
   execute "normal! o"
@@ -93,7 +96,7 @@ function! PYD_DocString()
   execute "normal! 'xk2e"
 endfunction
 
-function! PYD_RunPyFile()
+function PYD_RunPyFile()
   " Save user shell variables
   let l:save_shell = &shell
   let l:save_shellpipe = &shellpipe
@@ -148,7 +151,7 @@ function! PYD_RunPyFile()
   let &shellslash = l:save_shellslash
 endfunction
 
-function! PYD_RunPyLine()
+function PYD_RunPyLine()
   let l:linenum = getcurpos()[1]
   let l:line = getline(l:linenum)
   if exists("g:envname")
@@ -164,17 +167,47 @@ function! PYD_RunPyLine()
   endif
 endfunction
 
-function! PYD_SetEnv(envname)
+function PYD_RunPyLines(...) range abort
+  let l:lines = getline(a:firstline, a:lastline)
+  let l:cmd = ''
+  echom a:firstline . ' ' . get(l:lines, 0)
+  for n in l:lines
+    if len(l:lines) == 1
+      let l:cmd = l:cmd . n
+      break
+    else
+      let l:cmd = l:cmd . n . '\n'
+    endif
+  endfor
+  echom l:cmd
+  if exists("g:envname")
+    " Check to see if the Ipython interpreter is started
+    if exists("g:loaded_ipython")
+      Yrun l:cmd
+    else
+      call PYD_StartIPyInterp()
+      Yrun l:cmd
+    endif
+  else
+    echom "ERROR: environment is not set."
+  endif
+endfunction
+
+function PYD_SetEnv(envname)
   " Set environment variable
   let g:envname = a:envname
   echom "Python environment set to:" g:envname
 endfunction
 
-function! PYD_StartIPyInterp(...)
+function PYD_StartIPyInterp(...)
   if exists("g:envname")
     " Check to see if yakuake.vim is loaded
     if exists("g:loaded_yakuake")
-      execute "Yrun \"source " . s:envdir . "/" . g:envname . "/bin/activate; ipython\""
+      if exists("a:1")
+        execute "Yrun \"source " . s:envdir . "/" . g:envname . "/bin/activate; ipython -i --matplotlib=tk " . a:1 . "\""
+      else
+        execute "Yrun \"source " . s:envdir . "/" . g:envname . "/bin/activate; ipython --matplotlib=tk\""
+      endif
       let g:loaded_ipython = 1
     else
       let l:cmd = "source " . s:envdir . "/" . g:envname . "/bin/activate; ipython"

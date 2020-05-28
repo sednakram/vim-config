@@ -124,8 +124,8 @@ nnoremap <Leader>- ddp
 " Move line up
 nnoremap <Leader>_ ddkP
 " Uppercase current word
-nnoremap <C-U> vawU
-inoremap <C-U> <Esc>vawU
+nnoremap <C-U> vawU<esc>e
+inoremap <C-U> <esc>vawU<esc>ea
 " Add quotes around word or selection
 nnoremap <Leader>" viw<esc>a"<esc>hbi"<esc>lel
 nnoremap <Leader>' viw<esc>a'<esc>hbi'<esc>lel
