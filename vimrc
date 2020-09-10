@@ -19,12 +19,14 @@ syntax on                 " Turn on syntax highlighting.
 filetype on               " Turn on filetype detection
 set fileformat=unix       " Use Unix formatting.
 set encoding=utf-8        " Use UTF-8 encoding.
-source ~/.vim/pack/madscientist/start/vim-yakuake/yakuake.vim
+" source ~/.vim/pack/madscientist/start/vim-yakuake/yakuake.vim
 
 " ---------- Colorscheme Config ----------
 
 " set background=dark
-" colorscheme solarized
+" colorscheme badwolf
+colorscheme goodwolf
+set background=light
 
 " ---------- Line Numbering Config ----------
 
