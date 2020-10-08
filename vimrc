@@ -1,5 +1,5 @@
 " My Vimrc file
-" Last Change: 2020-03-26 Thu 11:23 AM CDT
+" Last Change: 2020-10-07 Wed 12:10 PM CDT
 " Maintainer: mark.grzovic@gmail.com
 " License: www.opensource.org/licenses/bsd-2-clause.php
 
@@ -19,7 +19,7 @@ syntax on                 " Turn on syntax highlighting.
 filetype on               " Turn on filetype detection
 set fileformat=unix       " Use Unix formatting.
 set encoding=utf-8        " Use UTF-8 encoding.
-" source ~/.vim/pack/madscientist/start/vim-yakuake/yakuake.vim
+source ~/.vim/pack/madscientist/start/vim-yakuake/yakuake.vim
 
 " ---------- Colorscheme Config ----------
 
@@ -185,6 +185,19 @@ augroup filetype_javascript
   autocmd Filetype javascript nnoremap <buffer> <localleader>c I//<esc>
 augroup END
 
+" ---------- Common Lisp ----------
+
+augroup filetype_lisp
+  autocmd!
+  autocmd FileType lisp source ~/.vim/pack/madscientist/start/vim-cldev/cldev.vim
+  autocmd FileType lisp setlocal shiftwidth=2
+  autocmd FileType lisp setlocal tabstop=2
+  autocmd FileType lisp setlocal softtabstop=2
+  " Enable folding
+  " Comment line
+  " Uncomment line
+augroup END
+
 " ---------- Matlab ----------
 
 augroup filetype_matlab
@@ -233,6 +246,9 @@ augroup END
 
 augroup filetype_vimscript
   autocmd!
+  autocmd FileType vim setlocal shiftwidth=2
+  autocmd FileType vim setlocal tabstop=2
+  autocmd FileType vim setlocal softtabstop=2
   " Comment line
   autocmd FileType vim nnoremap <buffer> <localleader>c 0i" <esc>
   " Uncomment line

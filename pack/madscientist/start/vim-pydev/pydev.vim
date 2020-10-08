@@ -2,7 +2,7 @@
 " Description: Useful functions for Python development
 " Maintainer: mark.grzovic@gmail.com 
 " Created: 2020-03-23 Mon 09:27 AM CDT
-" Last Change: 2020-04-10 Fri 10:55 AM CDT
+" Last Change: 2020-10-01 Thu 11:00 AM CDT
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -28,6 +28,7 @@ if exists("g:loaded_pydev")
   delcommand Ipython
   delcommand SetEnv
   delcommand Rpython
+  delcommand RestartIpython
 endif
 let g:loaded_pydev = 1
 
@@ -72,6 +73,7 @@ nnoremap <f9> :call PYD_RunPyLine()<cr>
 command -nargs=1 SetEnv call PYD_SetEnv(<args>)
 " Start an IPython interpreter
 command -nargs=? Ipython call PYD_StartIPyInterp(<args>)
+command -nargs=? RestartIpython call PYD_RestartIPython(<args>)
 " Run one or more lines of code
 command -nargs=? -range Rpython <line1>,<line2>call PYD_RunPyLines(<args>)
 
@@ -216,6 +218,20 @@ function PYD_StartIPyInterp(...)
   else
     echom "ERROR: environment is not set."
   endif
+endfunction
+
+function PYD_StopIPyInterp(...)
+  if exists("g:loaded_yakuake")
+    execute "Yrun \"quit()\""
+    execute "Yrun \"deactivate\""
+  else
+    echom "ERROR: Stopping IPython through Vim is not supported."
+  endif
+endfunction
+
+function PYD_RestartIPython(...)
+  call PYD_StopIPyInterp()
+  call PYD_StartIPyInterp()
 endfunction
 
 let &cpo = s:save_cpo
