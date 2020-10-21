@@ -7,3 +7,6 @@
 [submodule "pack/madscientist/start/vlime"]
 	path = pack/madscientist/start/vlime
 	url = https://github.com/vlime/vlime.git
+[submodule "pack/madscientist/start/paredit"]
+	path = pack/madscientist/start/paredit
+	url = https://github.com/kovisoft/paredit.git
