@@ -187,23 +187,29 @@ augroup END
 
 " ---------- Common Lisp ----------
 
-augroup filetype_lisp
-  autocmd!
-  autocmd FileType lisp source ~/.vim/pack/madscientist/start/vim-cldev/cldev.vim
-  autocmd FileType lisp setlocal shiftwidth=2
-  autocmd FileType lisp setlocal tabstop=2
-  autocmd FileType lisp setlocal softtabstop=2
-  " Enable folding
-  " Comment line
-  " Uncomment line
-augroup END
+" TODO: 2020-10-21 Wed 11:42 AM CDT
+" TODO: install vlime instead
+" augroup filetype_lisp
+"   autocmd!
+"   autocmd FileType lisp source ~/.vim/pack/madscientist/start/vim-cldev/cldev.vim
+"   autocmd FileType lisp setlocal shiftwidth=2
+"   autocmd FileType lisp setlocal tabstop=2
+"   autocmd FileType lisp setlocal softtabstop=2
+"   " Enable folding
+"   " Comment line
+"   autocmd Filetype lisp  nnoremap <buffer> <localleader>c 0i;; <esc>
+"   " Uncomment line
+"   autocmd FileType lisp nnoremap <buffer> <localleader>uc 03x
+" augroup END
 
 " ---------- Matlab ----------
 
 augroup filetype_matlab
   autocmd!
   " Comment line
-  autocmd Filetype matlab nnoremap <buffer> <localleader>c I% <esc>
+  autocmd Filetype matlab nnoremap <buffer> <localleader>c 0i% <esc>
+  " Uncomment line
+  autocmd FileType matlab nnoremap <buffer> <localleader>uc 02x
 augroup END
 
 " ---------- Python ----------
