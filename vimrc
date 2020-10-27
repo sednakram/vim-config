@@ -1,5 +1,5 @@
 " My Vimrc file
-" Last Change: 2020-10-07 Wed 12:10 PM CDT
+" Last Change: 2020-10-22 Thu 09:17 AM CDT
 " Maintainer: mark.grzovic@gmail.com
 " License: www.opensource.org/licenses/bsd-2-clause.php
 
@@ -19,7 +19,6 @@ syntax on                 " Turn on syntax highlighting.
 filetype on               " Turn on filetype detection
 set fileformat=unix       " Use Unix formatting.
 set encoding=utf-8        " Use UTF-8 encoding.
-source ~/.vim/pack/madscientist/start/vim-yakuake/yakuake.vim
 
 " ---------- Colorscheme Config ----------
 
@@ -58,7 +57,6 @@ set smartcase             " ...unless we type a capital.
 
 set showcmd               " Enable command completion.
 set wildmenu              " Enable command completion list.
-source ~/.vim/pack/madscientist/start/vim-mystatusline/mystatusline.vim
 
 " ---------- Backup/Swap file Config ----------
 
@@ -75,6 +73,11 @@ if has("gui_win32") || has("gui_win64")
   set shellxquote=\"
   set shellslash         " Use forward slash instead of backslash
 endif
+
+" ---------- Generate Helptags ----------
+
+" helptags ~/.vim/pack/madscientist/start/paredit/doc
+" helptags ~/.vim/
 
 " ========== MAPPINGS ==========
 
@@ -164,7 +167,7 @@ iabbrev tehn then
 " ---------- Useful abbreviations ----------
 
 iabbrev @@ mark.grzovic@gmail.com 
-iabbrev ccopy Copyright 2018 Mark Grzovic, all rights reserved.
+iabbrev ccopy Copyright 2020 Mark Grzovic, all rights reserved.
 iabbrev ttime <C-R>=strftime("%Y-%m-%d %a %I:%M %p %Z")<CR>
 iabbrev tdate <c-r>=strftime("%Y-%m-%d %a")<cr>
 
@@ -189,9 +192,9 @@ augroup END
 
 " TODO: 2020-10-21 Wed 11:42 AM CDT
 " TODO: install vlime instead
-" augroup filetype_lisp
-"   autocmd!
-"   autocmd FileType lisp source ~/.vim/pack/madscientist/start/vim-cldev/cldev.vim
+augroup filetype_lisp
+  autocmd!
+  autocmd FileType lisp source ~/.vim/pack/madscientist/start/vim-cldev/cldev.vim
 "   autocmd FileType lisp setlocal shiftwidth=2
 "   autocmd FileType lisp setlocal tabstop=2
 "   autocmd FileType lisp setlocal softtabstop=2
@@ -200,7 +203,7 @@ augroup END
 "   autocmd Filetype lisp  nnoremap <buffer> <localleader>c 0i;; <esc>
 "   " Uncomment line
 "   autocmd FileType lisp nnoremap <buffer> <localleader>uc 03x
-" augroup END
+augroup END
 
 " ---------- Matlab ----------
 
@@ -263,3 +266,11 @@ augroup filetype_vimscript
   autocmd FileType vim iabbrev <buffer> todo " TODO: <C-R>=strftime("%Y-%m-%d %a %I:%M %p %Z")<cr><cr>" TODO:
   " Enable folding
 augroup END
+
+nnoremap <Leader>sp :call <SID>SynStack()<cr>
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echom map(synstack(line("."), col(".")), "synIDattr(v:val, 'name')")
+endfunction

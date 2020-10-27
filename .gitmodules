@@ -10,3 +10,6 @@
 [submodule "pack/madscientist/start/paredit"]
 	path = pack/madscientist/start/paredit
 	url = https://github.com/kovisoft/paredit.git
+[submodule "pack/madscientist/start/vim-colors-zenburn"]
+	path = pack/madscientist/start/vim-colors-zenburn
+	url = https://github.com/jnurmine/Zenburn
