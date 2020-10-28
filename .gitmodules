@@ -19,3 +19,6 @@
 [submodule "pack/madscientist/start/vim-colors-lucius"]
 	path = pack/madscientist/start/vim-colors-lucius
 	url = https://github.com/jonathanfilip/vim-lucius
+[submodule "pack/madscientist/start/vim-colors-gruvbox"]
+	path = pack/madscientist/start/vim-colors-gruvbox
+	url = https://github.com/morhetz/gruvbox.git
