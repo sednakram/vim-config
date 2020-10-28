@@ -13,3 +13,6 @@
 [submodule "pack/madscientist/start/vim-colors-zenburn"]
 	path = pack/madscientist/start/vim-colors-zenburn
 	url = https://github.com/jnurmine/Zenburn
+[submodule "pack/madscientist/start/vim-colors-railscasts"]
+	path = pack/madscientist/start/vim-colors-railscasts
+	url = https://github.com/jgdavey/vim-railscasts
