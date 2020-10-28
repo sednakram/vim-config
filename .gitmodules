@@ -16,3 +16,6 @@
 [submodule "pack/madscientist/start/vim-colors-railscasts"]
 	path = pack/madscientist/start/vim-colors-railscasts
 	url = https://github.com/jgdavey/vim-railscasts
+[submodule "pack/madscientist/start/vim-colors-lucius"]
+	path = pack/madscientist/start/vim-colors-lucius
+	url = https://github.com/jonathanfilip/vim-lucius
