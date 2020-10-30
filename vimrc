@@ -23,9 +23,7 @@ set encoding=utf-8        " Use UTF-8 encoding.
 " ---------- Colorscheme Config ----------
 
 " set background=dark
-" colorscheme badwolf
-colorscheme goodwolf
-set background=light
+colorscheme darkburn
 
 " ---------- Line Numbering Config ----------
 
@@ -73,11 +71,6 @@ if has("gui_win32") || has("gui_win64")
   set shellxquote=\"
   set shellslash         " Use forward slash instead of backslash
 endif
-
-" ---------- Generate Helptags ----------
-
-" helptags ~/.vim/pack/madscientist/start/paredit/doc
-" helptags ~/.vim/
 
 " ========== MAPPINGS ==========
 
@@ -135,6 +128,12 @@ inoremap <C-U> <esc>vawU<esc>ea
 nnoremap <Leader>" viw<esc>a"<esc>hbi"<esc>lel
 nnoremap <Leader>' viw<esc>a'<esc>hbi'<esc>lel
 vnoremap <Leader>" <esc>a"<esc>v`<<esc>i"<esc>
+
+" ---------- Terminal mappings ----------
+
+" Make returning to normal mode the same as in a regular buffer
+tnoremap jk <C-W>N
+tnoremap JK <C-W>N
 
 " ---------- Disabled mappings ----------
 
@@ -263,7 +262,7 @@ augroup filetype_vimscript
   " Uncomment line
   autocmd FileType vim nnoremap <buffer> <localleader>uc 02x
   " Add todo note
-  autocmd FileType vim iabbrev <buffer> todo " TODO: <C-R>=strftime("%Y-%m-%d %a %I:%M %p %Z")<cr><cr>" TODO:
+  autocmd FileType vim iabbrev <buffer> todo " TODO: <C-R>=strftime("%Y-%m-%d %a %I:%M %p %Z")<cr><cr>TODO:
   " Enable folding
 augroup END
 
